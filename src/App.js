@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Routes, Route, createSearchParams, useSearchParams, useNavigate } from "react-router-dom"
 import { useDispatch, useSelector } from 'react-redux'
-import 'reactjs-popup/dist/index.css'
 import { fetchMovies } from './data/moviesSlice'
 import { ENDPOINT_SEARCH, ENDPOINT_DISCOVER, ENDPOINT, API_KEY } from './constants'
 import Header from './components/Header'
