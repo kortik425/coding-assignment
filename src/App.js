@@ -9,6 +9,7 @@ import Starred from './components/Starred'
 import WatchLater from './components/WatchLater'
 import VideoModal from './components/VideoModal'
 import './app.scss'
+import { debounce } from './utils'
 
 const App = () => {
 
@@ -37,10 +38,10 @@ const App = () => {
     }
   }
 
-  const searchMovies = (query) => {
+  const searchMovies = debounce((query) => {
     navigate('/')
     getSearchResults(query)
-  }
+  }, 500)
 
   const getMovies = () => {
     if (searchQuery) {
