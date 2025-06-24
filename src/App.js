@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { Routes, Route } from "react-router-dom"
-import { useSelector } from 'react-redux'
 import { ENDPOINT, API_KEY } from './constants'
 import Header from './components/Header'
 import Movies from './components/Movies'
@@ -10,7 +9,6 @@ import VideoModal from './components/VideoModal'
 import './app.scss'
 
 const App = () => {
-  const state = useSelector((state) => state)
   const [videoKey, setVideoKey] = useState()
   const [isOpen, setOpen] = useState(false)
   
