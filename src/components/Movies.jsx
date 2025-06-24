@@ -7,7 +7,7 @@ import { useSearchParams } from 'react-router-dom'
 import { ENDPOINT_SEARCH, ENDPOINT_DISCOVER } from '../constants'
 
 const Movies = ({ viewTrailer }) => {
-    const { movies, fetchStatus, page, totalPages } = useSelector(state => state.movies)
+    const { movies, fetchStatus, page, total_pages } = useSelector(state => state.movies)
     const dispatch = useDispatch()
     const [searchParams] = useSearchParams()
     const searchQuery = searchParams.get('search') || ''
@@ -28,6 +28,25 @@ const Movies = ({ viewTrailer }) => {
         } 
         dispatch(fetchMovies({ apiUrl: getApiUrl(searchQuery), page: 1 }))
     }, [searchQuery, dispatch])
+
+    const handleScroll = useCallback(() => {
+        const scrollPosition = window.innerHeight + document.documentElement.scrollTop
+        const threshold = document.documentElement.offsetHeight - 200
+
+        if (
+            scrollPosition >= threshold &&
+            fetchStatus !== 'loading' &&
+            page < total_pages
+        ) {
+            dispatch(fetchMovies({ apiUrl: getApiUrl(searchQuery), page: page + 1 }))
+        }
+    }, [dispatch, fetchStatus, page, total_pages, searchQuery])
+
+    useEffect(() => {
+        window.addEventListener('scroll', handleScroll)
+        return () => window.removeEventListener('scroll', handleScroll)
+    }, [handleScroll])
+    
     if (fetchStatus === 'loading' && (!movies?.length === 0)) {
         return <div>Loading...</div>
     }
@@ -39,12 +58,15 @@ const Movies = ({ viewTrailer }) => {
     return (
         <div className='movie-list' data-testid="movies">
             {movies?.map((movie) => (
-                    <Movie 
-                        movie={movie} 
-                        key={movie.id}
-                        viewTrailer={viewTrailer}
-                    />
+                <Movie 
+                    movie={movie} 
+                    key={movie.id}
+                    viewTrailer={viewTrailer}
+                />
             ))}
+            {fetchStatus === 'loading' && movies.length > 0 && (
+                <span className='scroll-loading-text'>Loading more...</span>
+            )}
         </div>
     )
 }
