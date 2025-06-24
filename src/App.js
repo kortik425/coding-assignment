@@ -9,35 +9,15 @@ import Starred from './components/Starred'
 import WatchLater from './components/WatchLater'
 import VideoModal from './components/VideoModal'
 import './app.scss'
-import { debounce } from './utils'
 
 const App = () => {
 
   const state = useSelector((state) => state)
-  const { movies } = state  
-  const dispatch = useDispatch()
-  const [searchParams, setSearchParams] = useSearchParams()
-  const searchQuery = searchParams.get('search')
   const [videoKey, setVideoKey] = useState()
   const [isOpen, setOpen] = useState(false)
   const navigate = useNavigate()
   
   const closeModal = () => setOpen(false)
-
-  const getSearchResults = (query) => {
-    if (query !== '') {
-      dispatch(fetchMovies(`${ENDPOINT_SEARCH}&query=`+query))
-      setSearchParams(createSearchParams({ search: query }))
-    } else {
-      dispatch(fetchMovies(ENDPOINT_DISCOVER))
-      setSearchParams()
-    }
-  }
-
-  const searchMovies = debounce((query) => {
-    navigate('/')
-    getSearchResults(query)
-  }, 500)
 
   const getMovies = () => {
     if (searchQuery) {
@@ -72,8 +52,7 @@ const App = () => {
 
   return (
     <div className="App">
-      <Header searchMovies={searchMovies} searchParams={searchParams} setSearchParams={setSearchParams} />
-
+      <Header />
       <div className="container">
         <VideoModal isOpen={isOpen} onClose={closeModal} videoKey={videoKey} />
         <Routes>
