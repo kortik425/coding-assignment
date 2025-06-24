@@ -1,57 +1,23 @@
 import Movie from './Movie'
 import '../styles/movies.scss'
-import { useSelector, useDispatch } from 'react-redux'
-import { fetchMovies } from '../data/moviesSlice'
-import { useEffect, useCallback, useRef } from 'react'
-import { useSearchParams } from 'react-router-dom'
-import { ENDPOINT_SEARCH, ENDPOINT_DISCOVER } from '../constants'
+import { useDispatchMovies } from '../hooks/useDispatchMovies'
 
 const Movies = ({ viewTrailer }) => {
-    const { movies, fetchStatus, page, total_pages } = useSelector(state => state.movies)
-    const dispatch = useDispatch()
-    const [searchParams] = useSearchParams()
-    const searchQuery = searchParams.get('search') || ''
-    const initialLoad = useRef(true)
-
-    const getApiUrl = (query) => {
-        if (query && query.trim() !== '') {
-            return `${ENDPOINT_SEARCH}&query=${encodeURIComponent(query)}`
-        } else {
-            return ENDPOINT_DISCOVER
-        }
-    }
-
-    useEffect(() => {
-        if (initialLoad.current) {
-            initialLoad.current = false
-            return;
-        } 
-        dispatch(fetchMovies({ apiUrl: getApiUrl(searchQuery), page: 1 }))
-    }, [searchQuery, dispatch])
-
-    const handleScroll = useCallback(() => {
-        const scrollPosition = window.innerHeight + document.documentElement.scrollTop
-        const threshold = document.documentElement.offsetHeight - 200
-
-        if (
-            scrollPosition >= threshold &&
-            fetchStatus !== 'loading' &&
-            page < total_pages
-        ) {
-            dispatch(fetchMovies({ apiUrl: getApiUrl(searchQuery), page: page + 1 }))
-        }
-    }, [dispatch, fetchStatus, page, total_pages, searchQuery])
-
-    useEffect(() => {
-        window.addEventListener('scroll', handleScroll)
-        return () => window.removeEventListener('scroll', handleScroll)
-    }, [handleScroll])
+    const { 
+        movies, 
+        isMoviesListLoading, 
+        isMoviesListError, 
+        page, 
+        total_pages, 
+        fetchStatus ,
+        apiUrl
+    } = useDispatchMovies()
     
-    if (fetchStatus === 'loading' && (!movies?.length === 0)) {
+    if (isMoviesListLoading) {
         return <div>Loading...</div>
     }
     
-    if (fetchStatus === 'error') {
+    if (isMoviesListError) {
         return <div>Error loading movies</div>
     }
 
