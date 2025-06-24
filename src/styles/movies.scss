@@ -191,6 +191,17 @@
             background: #1CB5E0;
             border-color: #1CB5E0;
         }
+
+        &.btn-close-modal {
+            position: absolute;
+            text-align: right;
+            top: -5px;
+            right: 20px;
+            font-size: 1.7rem;
+            background: transparent;
+            border: 0;
+            color: #fff;
+        }
     }
 }
 
