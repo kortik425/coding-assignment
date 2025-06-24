@@ -1,5 +1,6 @@
 import Movie from './Movie'
 import '../styles/movies.scss'
+import { useInfiniteScroll } from '../hooks/useInfiniteScroll'
 import { useDispatchMovies } from '../hooks/useDispatchMovies'
 
 const Movies = ({ viewTrailer }) => {
@@ -12,6 +13,8 @@ const Movies = ({ viewTrailer }) => {
         fetchStatus ,
         apiUrl
     } = useDispatchMovies()
+    
+    useInfiniteScroll({apiUrl, fetchStatus, page, total_pages})
     
     if (isMoviesListLoading) {
         return <div>Loading...</div>
