@@ -3,7 +3,6 @@ import { render } from '@testing-library/react';
 import { Provider } from 'react-redux'
 import { BrowserRouter } from 'react-router-dom'
 import { configureStore } from '@reduxjs/toolkit'
-import { setupListeners } from '@reduxjs/toolkit/dist/query'
 import moviesSlice from '../data/moviesSlice'
 import starredSlice from '../data/starredSlice'
 import watchLaterSlice from '../data/watchLaterSlice'
@@ -23,8 +22,6 @@ export function renderWithProviders(
     ...renderOptions
   } = {}
 ) {
-
-  setupListeners(store.dispatch)
 
   function Wrapper({ children }) {
     return <Provider store={store}><BrowserRouter>{children}</BrowserRouter></Provider>;
