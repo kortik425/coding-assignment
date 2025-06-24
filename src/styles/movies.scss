@@ -11,9 +11,25 @@
         text-decoration: none;
     }
 
-    .wrapper {
-        padding: 0 6px;
-        margin-bottom: 2rem;
+    .movie-list {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 1.5rem;
+        
+        @media (max-width: 900px) {
+          grid-template-columns: repeat(4, 1fr);
+        }
+        @media (max-width: 720px) {
+          grid-template-columns: repeat(3, 1fr);
+        }
+        @media (max-width: 480px) {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        .wrapper {
+            padding: 0 6px;
+            margin-bottom: 2rem;
+        }
     }
 
     .card, 
