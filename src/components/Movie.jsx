@@ -1,33 +1,34 @@
+import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import starredSlice from '../data/starredSlice'
 import watchLaterSlice from '../data/watchLaterSlice'
 import placeholder from '../assets/not-found-500X750.jpeg'
 
-const Movie = ({ movie, viewTrailer, closeCard }) => {
+const Movie = ({ movie, viewTrailer }) => {
+    const [isMobileMovieOpened, setIsMobileMovieOpened] = useState(false)
 
-    const state = useSelector((state) => state)
-    const { starred, watchLater } = state
+    const starredMovies = useSelector((state) => state.starred.starredMovies)
+    const watchLaterMovies = useSelector((state) => state.watchLater.watchLaterMovies)
     const { starMovie, unstarMovie } = starredSlice.actions
     const { addToWatchLater, removeFromWatchLater } = watchLaterSlice.actions
 
     const dispatch = useDispatch()
 
-    const myClickHandler = (e) => {
-        if (!e) var e = window.event
-        e.cancelBubble = true
-        if (e.stopPropagation) e.stopPropagation()
-        e.target.parentElement.parentElement.classList.remove('opened')
+    const handleOpen = () => setIsMobileMovieOpened(true)
+    const handleClose = (e) => { 
+        e.stopPropagation()
+        setIsMobileMovieOpened(false)
     }
 
     return (
-        <div className="wrapper col-3 col-sm-4 col-md-3 col-lg-3 col-xl-2">
-        <div className="card" onClick={(e) => e.currentTarget.classList.add('opened')} >
+        <div className="wrapper">
+        <div className={`card${isMobileMovieOpened ? ' opened' : ''}`} onClick={handleOpen}>
             <div className="card-body text-center">
                 <div className="overlay" />
                 <div className="info_panel">
                     <div className="overview">{movie.overview}</div>
                     <div className="year">{movie.release_date?.substring(0, 4)}</div>
-                    {!starred.starredMovies.map(movie => movie.id).includes(movie.id) ? (
+                    {!starredMovies.map(movie => movie.id).includes(movie.id) ? (
                         <span className="btn-star" data-testid="starred-link" onClick={() => 
                             dispatch(starMovie({
                                 id: movie.id, 
@@ -44,7 +45,7 @@ const Movie = ({ movie, viewTrailer, closeCard }) => {
                             <i className="bi bi-star-fill" data-testid="star-fill" />
                         </span>
                     )}
-                    {!watchLater.watchLaterMovies.map(movie => movie.id).includes(movie.id) ? (
+                    {!watchLaterMovies.map(movie => movie.id).includes(movie.id) ? (
                         <button type="button" data-testid="watch-later" className="btn btn-light btn-watch-later" onClick={() => dispatch(addToWatchLater({
                                 id: movie.id, 
                                 overview: movie.overview, 
@@ -61,7 +62,7 @@ const Movie = ({ movie, viewTrailer, closeCard }) => {
             </div>
             <h6 className="title mobile-card">{movie.title}</h6>
             <h6 className="title">{movie.title}</h6>
-            <button type="button" className="close" onClick={(e) => myClickHandler(e)} aria-label="Close">
+            <button type="button" className="close" onClick={handleClose} aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
         </div>
